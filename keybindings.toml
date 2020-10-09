@@ -1,0 +1,18 @@
+[game]
+  [game.movement]
+  _type = "axis2d"
+  _device_order = ["gamepad", "keyboard"]
+  gamepad = "left_x,left_y"
+  keyboard = "arrow_left,arrow_right,arrow_down,arrow_up"
+
+  [game.interact]
+  _type = "trigger"
+  _device_order = ["gamepad", "keyboard"]
+  gamepad = "face_x"
+  keyboard = "e"
+
+  [game.fire]
+  _type = "trigger"
+  _device_order = ["gamepad", "keyboard"]
+  gamepad = "rtrigger"
+  keyboard = "mouse1"
