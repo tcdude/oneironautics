@@ -25,7 +25,7 @@ class Player():
         self.pivot = self.root.attach_new_node("player_pivot")
         base.camera.reparent_to(self.pivot)
         base.camera.set_z(1.7)
-        #base.cam.node().get_lens().set_fov(90)
+        base.cam.node().get_lens().set_fov(90)
 
         self.move_speed = 10
         self.turn_speed = 100
@@ -53,7 +53,7 @@ class Player():
             collision_point.set_z(max(0,collision_point.z))
             self.root.set_pos(render, collision_point)
             original_heading = self.root.get_h()
-            self.root.look_at(render, collision_point)
+            self.root.look_at(render, collision_point, collision_normal)
             self.root.set_h(original_heading)
         else:
             print("can't go that way")
