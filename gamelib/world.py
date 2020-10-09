@@ -10,6 +10,7 @@ CAM_SPEED = 800
 
 class World(DirectObject):
     def __init__(self):
+        super().__init__()
         self.root = base.render.attach_new_node('World')
         self.room = Room()
         rooms = loader.load_model('assets/rooms.blend')
@@ -22,8 +23,6 @@ class World(DirectObject):
 
         for i in self.door.find_all_texture_stages():
             self.door.set_texture(i, self.room.mytex, 1)
-        #for i in self.door.find('**/Cube*').find_all_texture_stages():
-        #    self.door.find('**/Cube*').set_texture(i, self.room.mytex, 1)
 
         portal_vert_str = load_shader_str('portal.vert')
         portal_frag_str = load_shader_str('portal.frag')
@@ -34,16 +33,11 @@ class World(DirectObject):
         )
         self.door.set_shader(portalshader)
 
-        """mat = core.Material("planet")
-        mat.refractive_index = 1
-        mat.roughness = 1
-        for i in self.root.find_all_matches('**'):
-            i.set_material(mat)"""
-
         self.rooms.set_pos(0, 0, 0)
         base.camera.reparent_to(self.root)
         base.camera.set_pos(0, 5, 2)
         base.camera.look_at(self.door)
+
         self.accept('w-repeat', self.move, [core.Vec3(0, 1, 0)])
         self.accept('s-repeat', self.move, [core.Vec3(0, -1, 0)])
         self.accept('a-repeat', self.move, [core.Vec3(-1, 0, 0)])
@@ -52,11 +46,11 @@ class World(DirectObject):
         self.accept('arrow_down-repeat', self.move, [core.Vec3(0, 0, -1)])
         self.accept('arrow_left-repeat', self.rotate, [1])
         self.accept('arrow_right-repeat', self.rotate, [-1])
+
         fov = base.cam.node().get_lens().get_fov()
         print(fov, self.room.cam.node().get_lens().get_fov())
         self.room.cam.node().get_lens().set_fov(fov)
         base.taskMgr.add(self.update)
-        base.cam.node().show_frustum()
 
     def move(self, direction):
         base.camera.set_pos(base.camera, direction * SPEED * globalClock.dt)
@@ -67,5 +61,4 @@ class World(DirectObject):
     def update(self, task):
         loc = base.camera.get_mat(self.door_focus)
         self.room.cam.set_mat(self.room.door_focus, loc)
-        #self.room.cam.look_at(self.room.door)
         return task.cont
