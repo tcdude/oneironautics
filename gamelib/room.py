@@ -13,7 +13,7 @@ class Room:
         self.cam = base.make_camera(self.buff)
         self.cam.reparent_to(self.root)
         self.cam.set_r(180)
-        rooms = loader.load_model('assets/rooms.blend')
+        rooms = loader.load_model('assets/models/rooms.blend')
         self.room = rooms.find('**/room_b')
         self.room.reparent_to(self.root)
         self.room.clear_light()

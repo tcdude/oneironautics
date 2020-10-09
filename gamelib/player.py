@@ -57,16 +57,25 @@ class Player():
 
 
 if __name__ == "__main__":
+    import panda3d
+    import pman.shim
+    
+    panda3d.core.load_prc_file(
+        panda3d.core.Filename.expand_from('$MAIN_DIR/settings.prc')
+    )
+
+
     class Game(ShowBase):
         def __init__(self):
             ShowBase.__init__(self)
-            base.disable_mouse()
+            pman.shim.init(self)
+            self.disable_mouse()
             add_device_listener(
                 config_file='keybindings.toml',
                 assigner=SinglePlayerAssigner(),
             )
             self.mask = BitMask32(0x1)
-            self.map = loader.load_model("test.bam")
+            self.map = loader.load_model("assets/models/test.bam")
             self.nav = self.map.find("nav*")
             self.nav.hide()
             self.nav.set_collide_mask(self.mask)
@@ -81,5 +90,5 @@ if __name__ == "__main__":
             return task.cont
         
 
-        game = Game()
-        game.run()
+    game = Game()
+    game.run()

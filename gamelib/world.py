@@ -13,7 +13,7 @@ class World(DirectObject):
         super().__init__()
         self.root = base.render.attach_new_node('World')
         self.room = Room()
-        rooms = loader.load_model('assets/rooms.blend')
+        rooms = loader.load_model('assets/models/rooms.blend')
         self.rooms = rooms.find('**/room_a')
         self.rooms.reparent_to(self.root)
         self.root.clear_light()
