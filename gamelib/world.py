@@ -70,6 +70,7 @@ class World(DirectObject):
         base.camera.set_h(base.camera, direction * CAM_SPEED * globalClock.dt)
 
     def update(self, task):
+        self.player.update()
         loc = base.camera.get_mat(self.door_focus)
         self.room.cam.set_mat(self.room.door_focus, loc)
         return task.cont

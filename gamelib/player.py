@@ -22,8 +22,8 @@ class Player():
     def __init__(self, world):
         self.world = world
         self.root = self.world.root.attach_new_node("player")
-        base.cam.reparent_to(self.root)
-        base.cam.set_z(1.7)
+        base.camera.reparent_to(self.root)
+        base.camera.set_z(1.7)
         base.cam.node().get_lens().set_fov(90)
 
         self.move_speed = 10
@@ -36,18 +36,19 @@ class Player():
             (0,0,1), (0,0,-1) # ray ends well below feet to register downward slopes
         )
 
-    def update(self, context):
-        self.root.set_h(self.root, -context["movement"].x*self.turn_speed*base.dt)
-        self.ray["node"].set_y(self.root, context["movement"].y*self.move_speed*base.dt)
+    def update(self):
+        dt = globalClock.get_dt()
+        context = base.device_listener.read_context('game')
+        self.root.set_h(self.root, -context["movement"].x*self.turn_speed*dt)
+        self.ray["node"].set_y(self.root, context["movement"].y*self.move_speed*dt)
         self.traverser.traverse(render)
         if self.ray["handler"].get_num_entries() > 0:
             self.ray["handler"].sort_entries()
             closest_entry = list(self.ray["handler"].entries)[0]
             collision_point = closest_entry.get_surface_point(self.root)
-            collision_normal = closest_entry.get_surface_normal(self.root)
-            self.root.set_hpr(self.root.get_hpr()-collision_normal)
+            #collision_normal = closest_entry.get_surface_normal(self.root)
+            #self.root.set_hpr(self.root.get_hpr()-collision_normal)
             #self.root.look_at(render, (0,-1,0))
 
         else:
-            return
             print("something went really wrong, player is off the navmesh")
