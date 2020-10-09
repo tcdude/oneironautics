@@ -1,6 +1,7 @@
 from panda3d import core
 from direct.showbase.DirectObject import DirectObject
 
+from .player import Player
 from .room import Room
 from .util import load_shader_str
 
@@ -32,8 +33,19 @@ class World(DirectObject):
             fragment=portal_frag_str,
         )
         self.door.set_shader(portalshader)
-
         self.rooms.set_pos(0, 0, 0)
+
+        self.mask = core.BitMask32(0x1)
+        self.nav = self.rooms.find("**/nav*")
+        self.nav.hide()
+        self.nav.set_collide_mask(self.mask)
+
+        base.taskMgr.add(self.update)
+
+        if False:
+            self.player = Player(self)
+            return
+
         base.camera.reparent_to(self.root)
         base.camera.set_pos(0, 5, 2)
         base.camera.look_at(self.door)
@@ -46,11 +58,10 @@ class World(DirectObject):
         self.accept('arrow_down-repeat', self.move, [core.Vec3(0, 0, -1)])
         self.accept('arrow_left-repeat', self.rotate, [1])
         self.accept('arrow_right-repeat', self.rotate, [-1])
-
+   
         fov = base.cam.node().get_lens().get_fov()
         print(fov, self.room.cam.node().get_lens().get_fov())
         self.room.cam.node().get_lens().set_fov(fov)
-        base.taskMgr.add(self.update)
 
     def move(self, direction):
         base.camera.set_pos(base.camera, direction * SPEED * globalClock.dt)

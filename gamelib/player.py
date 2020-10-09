@@ -1,6 +1,3 @@
-from direct.showbase.ShowBase import ShowBase
-from keybindings.device_listener import add_device_listener
-from keybindings.device_listener import SinglePlayerAssigner
 from panda3d.core import CollideMask
 from panda3d.core import CollisionNode
 from panda3d.core import CollisionSegment
@@ -22,8 +19,9 @@ def setup_ray(node, traverser, bitmask, point_a=(0,0,1), point_b=(0,0,0)):
 
 
 class Player():
-    def __init__(self):
-        self.root = render.attach_new_node("player")
+    def __init__(self, world):
+        self.world = world
+        self.root = self.world.root.attach_new_node("player")
         base.cam.reparent_to(self.root)
         base.cam.set_z(1.7)
         base.cam.node().get_lens().set_fov(90)
@@ -34,7 +32,7 @@ class Player():
 
         self.traverser = CollisionTraverser()
         self.ray = setup_ray(
-            self.root, self.traverser, base.mask,
+            self.root, self.traverser, self.world.mask,
             (0,0,1), (0,0,-1) # ray ends well below feet to register downward slopes
         )
 
@@ -53,42 +51,3 @@ class Player():
         else:
             return
             print("something went really wrong, player is off the navmesh")
-
-
-
-if __name__ == "__main__":
-    import panda3d
-    import pman.shim
-    
-    panda3d.core.load_prc_file(
-        panda3d.core.Filename.expand_from('$MAIN_DIR/settings.prc')
-    )
-
-
-    class Game(ShowBase):
-        def __init__(self):
-            ShowBase.__init__(self)
-            pman.shim.init(self)
-            self.disable_mouse()
-            add_device_listener(
-                config_file='keybindings.toml',
-                assigner=SinglePlayerAssigner(),
-            )
-            self.mask = BitMask32(0x1)
-            self.map = loader.load_model("assets/models/test.bam")
-            self.nav = self.map.find("nav*")
-            self.nav.hide()
-            self.nav.set_collide_mask(self.mask)
-            self.map.reparent_to(render)
-
-            self.player = Player()
-            self.taskMgr.add(self.update)
-
-        def update(self, task):
-            self.dt = globalClock.get_dt()
-            self.player.update(self.device_listener.read_context('game'))        
-            return task.cont
-        
-
-    game = Game()
-    game.run()
