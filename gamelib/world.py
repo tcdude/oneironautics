@@ -37,28 +37,13 @@ class World(DirectObject):
 
         self.mask = core.BitMask32(0x1)
         self.nav = self.rooms.find("**/nav*")
-        self.nav.hide()
+        #self.nav.hide()
         self.nav.set_collide_mask(self.mask)
 
         base.taskMgr.add(self.update)
 
-        if False:
-            self.player = Player(self)
-            return
+        self.player = Player(self)
 
-        base.camera.reparent_to(self.root)
-        base.camera.set_pos(0, 5, 2)
-        base.camera.look_at(self.door)
-
-        self.accept('w-repeat', self.move, [core.Vec3(0, 1, 0)])
-        self.accept('s-repeat', self.move, [core.Vec3(0, -1, 0)])
-        self.accept('a-repeat', self.move, [core.Vec3(-1, 0, 0)])
-        self.accept('d-repeat', self.move, [core.Vec3(1, 0, 0)])
-        self.accept('arrow_up-repeat', self.move, [core.Vec3(0, 0, 1)])
-        self.accept('arrow_down-repeat', self.move, [core.Vec3(0, 0, -1)])
-        self.accept('arrow_left-repeat', self.rotate, [1])
-        self.accept('arrow_right-repeat', self.rotate, [-1])
-   
         fov = base.cam.node().get_lens().get_fov()
         print(fov, self.room.cam.node().get_lens().get_fov())
         self.room.cam.node().get_lens().set_fov(fov)

@@ -22,13 +22,13 @@ class Player():
     def __init__(self, world):
         self.world = world
         self.root = self.world.root.attach_new_node("player")
-        base.camera.reparent_to(self.root)
+        self.pivot = self.root.attach_new_node("player_pivot")
+        base.camera.reparent_to(self.pivot)
         base.camera.set_z(1.7)
-        base.cam.node().get_lens().set_fov(90)
+        #base.cam.node().get_lens().set_fov(90)
 
         self.move_speed = 10
         self.turn_speed = 100
-        self.heading = 0
 
         self.traverser = CollisionTraverser()
         self.ray = setup_ray(
@@ -39,16 +39,21 @@ class Player():
     def update(self):
         dt = globalClock.get_dt()
         context = base.device_listener.read_context('game')
-        self.root.set_h(self.root, -context["movement"].x*self.turn_speed*dt)
-        self.ray["node"].set_y(self.root, context["movement"].y*self.move_speed*dt)
+        head_speed  = -context["movement"].x*self.turn_speed*dt
+        walk_speed  = context["movement"].y*self.move_speed*dt
+        self.root.set_h(self.root, head_speed)
+        self.ray["node"].set_y(self.root, walk_speed)
         self.traverser.traverse(render)
         if self.ray["handler"].get_num_entries() > 0:
             self.ray["handler"].sort_entries()
             closest_entry = list(self.ray["handler"].entries)[0]
-            collision_point = closest_entry.get_surface_point(self.root)
-            #collision_normal = closest_entry.get_surface_normal(self.root)
-            #self.root.set_hpr(self.root.get_hpr()-collision_normal)
-            #self.root.look_at(render, (0,-1,0))
-
+            collision_point = closest_entry.get_surface_point(render)
+            collision_normal = closest_entry.get_surface_normal(render)
+            # take heed of the ray ending well below feet
+            collision_point.set_z(max(0,collision_point.z))
+            self.root.set_pos(render, collision_point)
+            original_heading = self.root.get_h()
+            self.root.look_at(render, collision_point)
+            self.root.set_h(original_heading)
         else:
-            print("something went really wrong, player is off the navmesh")
+            print("can't go that way")
