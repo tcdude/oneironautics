@@ -41,8 +41,8 @@ class Player():
         context = base.device_listener.read_context('game')
         head_speed  = -context["movement"].x*self.turn_speed*dt
         walk_speed  = context["movement"].y*self.move_speed*dt
-        self.root.set_h(self.root, head_speed)
-        self.ray["node"].set_y(self.root, walk_speed)
+        self.pivot.set_h(self.pivot, head_speed)
+        self.ray["node"].set_y(self.pivot, walk_speed)
         self.traverser.traverse(render)
         if self.ray["handler"].get_num_entries() > 0:
             self.ray["handler"].sort_entries()
@@ -52,8 +52,5 @@ class Player():
             # take heed of the ray ending well below feet
             collision_point.set_z(max(0,collision_point.z))
             self.root.set_pos(render, collision_point)
-            original_heading = self.root.get_h()
             self.root.look_at(render, collision_point, collision_normal)
-            self.root.set_h(original_heading)
-        else:
-            print("can't go that way")
+        self.ray["node"].set_y(self.pivot, 0)
