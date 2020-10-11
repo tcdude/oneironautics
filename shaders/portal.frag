@@ -43,7 +43,11 @@ vec3 noised(in vec2 p)
 void main() {
     // Switch between entire texture for fake version and screen space version
     vec2 uv = vec2(1.0f) - l_texcoord; // vtx_pos.xy / vtx_pos.w;
-    //uv = normalize(noised(uv + osg_FrameTime).yz);
+    vec3 n = normalize(noised(uv + osg_FrameTime * 0.15));
+    vec2 d = normalize(noised(uv + osg_FrameTime * 0.1).yz);
+    uv = smoothstep(0.0f, 1.0f, uv + d * 0.05);
     vec4 tex_color = texture(p3d_Texture0, uv);
+    //tex_color.rgb += n / 3.0f;
+    //tex_color.rgb /= 1.3f;
     color = tex_color;
 }
