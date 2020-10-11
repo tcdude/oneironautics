@@ -36,11 +36,13 @@ class Portal:
     def activate(self):
         self.cam.node().set_active(False)
         self._active = True
+        self.this_door.show()
 
     def deactivate(self):
         self.cam.node().set_active(True)
         self.cam.node().get_lens().set_fov(base.cam.node().get_lens().get_fov())
         self._active = False
+        self.this_door.hide()
 
     def connect_to(self, room, door):
         self.conn_room = room
