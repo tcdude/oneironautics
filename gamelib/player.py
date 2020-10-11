@@ -2,7 +2,9 @@ from panda3d.core import ConfigVariableDouble
 from panda3d.core import CollideMask
 from panda3d.core import CollisionNode
 from panda3d.core import CollisionSegment
+from panda3d.core import CollisionSphere
 from panda3d.core import CollisionTraverser
+from panda3d.core import CollisionHandlerEvent
 from panda3d.core import CollisionHandlerQueue
 from panda3d.core import BitMask32
 from panda3d.core import KeyboardButton
@@ -37,10 +39,21 @@ class Player():
         )
         self.xyh_inertia = Vec3(0,0,0)
         h_acc = ConfigVariableDouble('mouse-accelleration', 0.1).get_value()
-        print(h_acc)
         self.xyh_acceleration = Vec3(0.5,0.5,h_acc)
         self.friction = 0.2
         self.torque = 0.5
+
+        # Collider for portals
+        csphere = CollisionSphere(0, 0, 1.25, 1.5)
+        cnode = CollisionNode('player')
+        cnode.add_solid(csphere)
+        cnode.set_from_collide_mask(0x2)
+        cnode.set_into_collide_mask(CollideMask.all_off())
+        self.collider = self.root.attach_new_node(cnode)
+        self.event_handler = CollisionHandlerEvent()
+        self.event_handler.add_in_pattern('into-%in')
+        self.traverser.add_collider(self.collider, self.event_handler)
+        self.collider.show()
 
         base.input.set_mouse_relativity(True)
 

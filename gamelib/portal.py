@@ -27,6 +27,8 @@ class Portal:
             core.Point3(-0.75, 0, 2.5), core.Point3(0.75, 0, 2.5))
         cnode = core.CollisionNode(f'{self.this_room.name}_{self.this_door.name}')
         cnode.add_solid(self._collision_quad)
+        cnode.set_from_collide_mask(core.CollideMask.all_off())
+        cnode.set_into_collide_mask(0x2)
         self.collider = self.this_door.attach_new_node(cnode)
         self.collider.set_pos(self.this_door, (0,0.05,0))
         self.collider.set_hpr(self.this_door, (0,0,0))
