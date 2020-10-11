@@ -1,22 +1,50 @@
 from panda3d import core
 
+from .portal import Portal
+from .util import load_shader_str
+
 
 class Room:
-    def __init__(self):
+    def __init__(self, room):
         self.root = core.NodePath('Room')
-        self.root.set_shader_auto(True)
-        self.buff = base.win.make_texture_buffer('Room Buffer', 2048, 2048)
+        self.room_model = room
+        self.room_model.reparent_to(self.root)
+        self.name = room.name
+        
+        self.doors = [
+            i for i in self.room_model.find_all_matches('**/door*')
+        ]
+        self.portals = [
+            Portal(self, i) for i in self.doors
+        ]
 
-        self.mytex = self.buff.get_texture()
-        self.mytex.set_wrap_u(core.Texture.WM_clamp)
-        self.mytex.set_wrap_v(core.Texture.WM_clamp)
-        self.buff.set_sort(-100)
-        self.cam = base.make_camera(self.buff)
-        self.cam.reparent_to(self.root)
-        rooms = loader.load_model('assets/models/rooms.blend')
-        self.room = rooms.find('**/room_b')
-        self.room.reparent_to(self.root)
-        self.room.clear_light()
-        self.door = self.room.find('**/door*')
-        self.portal_in = self.door.attach_new_node('portal')
-        self.portal_in.set_h(180)
+        portal_vert_str = load_shader_str('portal.vert')
+        portal_frag_str = load_shader_str('portal.frag')
+        portalshader = core.Shader.make(
+            core.Shader.SL_GLSL,
+            vertex=portal_vert_str,
+            fragment=portal_frag_str,
+        )
+        for i in self.doors:
+            i.set_shader(portalshader)
+        self._active = False
+
+    def activate(self):
+        self._active = True
+        for i in self.portals:
+            i.activate()
+
+    def deactivate(self):
+        self._active = False
+        for i in self.portals:
+            i.deactivate()
+
+    def update(self):
+        for i in self.portals:
+            i.update()
+
+    def __len__(self):
+        return len(self.portals)
+
+    def __getitem__(self, item):
+        return self.portals[item]
