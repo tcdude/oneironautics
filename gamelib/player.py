@@ -1,3 +1,4 @@
+from panda3d.core import ConfigVariableDouble
 from panda3d.core import CollideMask
 from panda3d.core import CollisionNode
 from panda3d.core import CollisionSegment
@@ -35,7 +36,9 @@ class Player():
             (0,0,1), (0,0,-1)
         )
         self.xyh_inertia = Vec3(0,0,0)
-        self.xyh_acceleration = Vec3(0.5,0.5,4.5)
+        h_acc = ConfigVariableDouble('mouse-accelleration', 0.1).get_value()
+        print(h_acc)
+        self.xyh_acceleration = Vec3(0.5,0.5,h_acc)
         self.friction = 0.2
         self.torque = 0.5
 
