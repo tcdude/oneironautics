@@ -10,7 +10,7 @@ class Room:
         self.room_model = room
         self.room_model.reparent_to(self.root)
         self.name = room.name
-        
+
         self.doors = [
             i for i in self.room_model.find_all_matches('**/door*')
         ]
