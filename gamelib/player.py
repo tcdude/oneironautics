@@ -32,10 +32,10 @@ class Player():
         self.ray = setup_ray(
             self.root, self.traverser, self.world.mask,
             # ray ends well below feet to register downward slopes
-            (0,0,1), (0,0,-1) 
+            (0,0,1), (0,0,-1)
         )
         self.xyh_inertia = Vec3(0,0,0)
-        self.xyh_acceleration = Vec3(0.5,0.5,0.01)
+        self.xyh_acceleration = Vec3(0.5,0.5,4.5)
         self.friction = 0.2
         self.torque = 0.5
 
@@ -44,7 +44,7 @@ class Player():
     def handle_input(self):
         dt = globalClock.get_dt()
         directional_keys = (
-            ["strafe_right", "strafe_left"], 
+            ["strafe_right", "strafe_left"],
             ["forward", "backward"]
         )
         for k, keys in enumerate(directional_keys):
@@ -54,9 +54,9 @@ class Player():
                 self.xyh_inertia[k] -= self.xyh_acceleration[k]*dt
             self.xyh_inertia[k] /= 1+self.friction
 
-        h = base.input.mouse_movement.x*self.xyh_acceleration[k]*dt
+        h = base.input.mouse_movement.x*self.xyh_acceleration[2]*dt
         self.pivot.set_h(self.pivot, h)
-        p = base.input.mouse_movement.y*self.xyh_acceleration[k]*dt
+        p = base.input.mouse_movement.y*self.xyh_acceleration[2]*dt
         base.cam.set_p(base.cam, p)
         base.cam.set_p(max(-70, min(base.cam.get_p(), 70)))
 
