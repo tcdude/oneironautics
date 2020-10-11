@@ -1,1 +1,2 @@
-window-title Panda3D Game
+window-title Oneironautics
+win-size 1280 720
