@@ -58,7 +58,8 @@ class World(DirectObject):
         np = coll_entry.get_into_node_path()
         self.set_active_room(np.get_python_tag('portal').this_room.name)
         door = self.active_room.doors[np.get_python_tag('door')]
-        self.player.root.set_pos(door, (0, 2, 0))
+        self.player.root.set_pos(door, (0, 1.6, 0))
+        self.player.root.look_at(door, (0, 5, 0))
 
     def update(self, task):
         self.player.update()
