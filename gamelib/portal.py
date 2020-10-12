@@ -8,6 +8,7 @@ class Portal:
         self.conn_door = conn_door
         self.conn_room = conn_room
         self.buff = base.win.make_texture_buffer('Room Buffer', 1024, 1024)
+        self.buff.set_clear_color(0x000000)
 
         self.mytex = self.buff.get_texture()
         self.mytex.set_wrap_u(core.Texture.WM_clamp)
