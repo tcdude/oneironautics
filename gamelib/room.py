@@ -18,6 +18,11 @@ class Room:
             Portal(self, i) for i in self.doors
         ]
 
+        if room.name == 'room_c':
+            for i in self.doors:
+                quat = i.get_quat(self.root)
+                print(i, quat.get_forward(), quat.get_up())
+
         portal_vert_str = load_shader_str('portal.vert')
         portal_frag_str = load_shader_str('portal.frag')
         portalshader = core.Shader.make(

@@ -28,6 +28,7 @@ class GameApp(ShowBase):
         self.disable_mouse()
         self.input = Input()
         self.accept('escape', sys.exit)
+        self.accept('f1', self.toggle_wireframe)
         self.world = World()
         self.set_background_color(util.srgb_color(0x292931))
 

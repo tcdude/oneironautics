@@ -35,7 +35,7 @@ class Player():
         self.ray = setup_ray(
             self.root, self.traverser, self.world.mask,
             # ray ends well below feet to register downward slopes
-            (0,0,1), (0,0,-1)
+            (0,0,1), (0,0,-100)
         )
         self.xyh_inertia = Vec3(0,0,0)
         h_acc = ConfigVariableDouble('mouse-accelleration', 0.1).get_value()
@@ -54,6 +54,7 @@ class Player():
         self.event_handler.add_in_pattern('into-%in')
         self.traverser.add_collider(self.collider, self.event_handler)
         self.collider.show()
+        self.teleported = False
 
         base.input.set_mouse_relativity(True)
 
@@ -89,6 +90,9 @@ class Player():
         collision_point.set_z(max(0,collision_point.z))
         self.root.set_pos(render, collision_point)
         self.root.look_at(render, collision_point, collision_normal)
+        if self.teleported:
+            self.teleported = False
+            print('move after teleport', self.root.get_pos(render), self.root.get_hpr(render))
 
     def update(self):
         dt = globalClock.get_dt()

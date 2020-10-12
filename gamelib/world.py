@@ -27,6 +27,7 @@ class World(DirectObject):
         self.set_active_room(START_ROOM)
 
         self.player = Player(self)
+        self.last_teleport = 0
 
         base.taskMgr.add(self.update)
 
@@ -55,11 +56,22 @@ class World(DirectObject):
             self.active_room[i].collider.set_python_tag('door', doori)
 
     def teleport(self, coll_entry):
+        t = globalClock.frame_time
+        if t - self.last_teleport < 0.5:
+            return
+        self.last_teleport = t
         np = coll_entry.get_into_node_path()
         self.set_active_room(np.get_python_tag('portal').this_room.name)
         door = self.active_room.doors[np.get_python_tag('door')]
-        self.player.root.set_pos(door, (0, 1.6, 0))
-        self.player.root.look_at(door, (0, 5, 0))
+
+        self.player.root.set_mat(render, door.get_mat(render))
+        self.player.pivot.clear_transform()
+        #self.player.update()
+        #self.player.xyh_inertia = core.Vec3(0)
+        print('teleport', door.get_hpr(render), self.player.root.get_pos(render),
+            self.player.root.get_hpr(render), self.player.root.get_pos(door),
+            self.player.root.get_hpr(door))
+        self.player.teleported = True
 
     def update(self, task):
         self.player.update()
