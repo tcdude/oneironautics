@@ -10,6 +10,10 @@ from panda3d.core import BitMask32
 from panda3d.core import KeyboardButton
 from panda3d.core import Vec3
 
+from .util import clamp_angle, sign
+
+ROTATION_SPEED = 120
+
 
 def setup_ray(node, traverser, bitmask, point_a=(0,0,1), point_b=(0,0,0)):
     ray = CollisionSegment(point_a, point_b)
@@ -27,13 +31,14 @@ class Player():
     def __init__(self, world):
         self.world = world
         self.root = self.world.root.attach_new_node("player")
+        self.root_target = self.world.root.attach_new_node("player_target")
         self.pivot = self.root.attach_new_node("player_pivot")
         base.camera.reparent_to(self.pivot)
         base.camera.set_z(1.7)
         base.cam.node().get_lens().set_fov(90)
         self.traverser = CollisionTraverser()
         self.ray = setup_ray(
-            self.root, self.traverser, self.world.mask,
+            self.pivot, self.traverser, self.world.mask,
             # ray ends well below feet to register downward slopes
             (0,0,1), (0,0,-1)
         )
@@ -89,7 +94,8 @@ class Player():
         # take heed of the ray ending well below feet
         collision_point.set_z(max(0,collision_point.z))
         self.root.set_pos(render, collision_point)
-        self.root.look_at(render, collision_point, collision_normal)
+        self.root_target.set_pos(render, collision_point)
+        self.root_target.heads_up(render, collision_point, collision_normal)
         if self.teleported:
             self.teleported = False
             print('move after teleport', self.root.get_pos(render), self.root.get_hpr(render))
@@ -102,3 +108,18 @@ class Player():
         if self.ray["handler"].get_num_entries() > 0:
             self.move_to_ray()
         self.ray["node"].set_y(self.pivot, 0)
+        d_rot = self.root_target.get_hpr(render) - self.root.get_hpr(render)
+        h_delta = clamp_angle(d_rot.x)
+        p_delta = clamp_angle(d_rot.y)
+        r_delta = clamp_angle(d_rot.z)
+        rot_speed = ROTATION_SPEED * dt
+        if h_delta:
+            if abs(h_delta) > rot_speed:
+                h_delta = rot_speed * sign(h_delta)
+        if p_delta:
+            if abs(p_delta) > rot_speed:
+                p_delta = rot_speed * sign(p_delta)
+        if h_delta:
+            if abs(r_delta) > rot_speed:
+                r_delta = rot_speed * sign(r_delta)
+        self.root.set_hpr(self.root, h_delta, p_delta, r_delta)

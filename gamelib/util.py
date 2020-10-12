@@ -79,3 +79,11 @@ def calculate_oblique_matrix(projection_mat:core.LMatrix4f, clip_plane:core.Vec4
     mat[2][2] = c.z + 1
     mat[3][2] = c.w
     return mat
+
+
+def clamp_angle(angle):
+    while angle > 180:
+        angle -= 180
+    while angle < -180:
+        angle += 180
+    return angle
