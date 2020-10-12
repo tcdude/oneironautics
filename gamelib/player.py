@@ -35,7 +35,7 @@ class Player():
         self.ray = setup_ray(
             self.root, self.traverser, self.world.mask,
             # ray ends well below feet to register downward slopes
-            (0,0,1), (0,0,-100)
+            (0,0,1), (0,0,-1)
         )
         self.xyh_inertia = Vec3(0,0,0)
         h_acc = ConfigVariableDouble('mouse-accelleration', 0.1).get_value()
