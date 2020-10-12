@@ -63,15 +63,13 @@ class World(DirectObject):
         np = coll_entry.get_into_node_path()
         self.set_active_room(np.get_python_tag('portal').this_room.name)
         door = self.active_room.doors[np.get_python_tag('door')]
+        self.active_room.root.clear_transform()
+        self.active_room.root.set_h(-door.get_h(render))
 
         self.player.pivot.clear_transform()
         self.player.root.set_mat(render, door.get_mat(render))
         self.player.root.heads_up(door, (0, 1, 0), (0, 0, 1))
-        self.player.root.set_pos(door, (0, 2, 0))
         self.player.root_target.set_mat(render, self.player.root.get_mat(render))
-        #self.player.update()
-        #self.player.xyh_inertia = core.Vec3(0)
-        print('teleport', self.player.root.get_pos(render), self.player.root.get_hpr(render))
         self.player.teleported = True
 
     def update(self, task):

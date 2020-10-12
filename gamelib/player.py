@@ -12,7 +12,7 @@ from panda3d.core import Vec3
 
 from .util import clamp_angle, sign
 
-ROTATION_SPEED = 120
+ROTATION_SPEED = 40
 
 
 def setup_ray(node, traverser, bitmask, point_a=(0,0,1), point_b=(0,0,0)):
@@ -96,11 +96,11 @@ class Player():
         self.root.set_pos(render, collision_point)
         self.root_target.set_pos(render, collision_point)
         self.root_target.heads_up(render, collision_point, collision_normal)
-        if self.teleported:
-            self.teleported = False
-            print('move after teleport', self.root.get_pos(render), self.root.get_hpr(render))
 
     def update(self):
+        if self.teleported:
+            self.xyh_inertia = Vec3(0, self.xyh_acceleration[1] / 100, 0)
+            self.teleported = False
         dt = globalClock.get_dt()
         self.handle_input()
         self.ray_to_destination()
