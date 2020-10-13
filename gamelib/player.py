@@ -12,7 +12,7 @@ from panda3d.core import Vec3
 
 from .util import clamp_angle, sign
 
-ROTATION_SPEED = 40
+ROTATION_SPEED = 0.007
 
 
 def setup_ray(node, traverser, bitmask, point_a=(0,0,1), point_b=(0,0,0)):
@@ -108,18 +108,10 @@ class Player():
         if self.ray["handler"].get_num_entries() > 0:
             self.move_to_ray()
         self.ray["node"].set_y(self.pivot, 0)
-        d_rot = self.root_target.get_hpr(render) - self.root.get_hpr(render)
-        h_delta = clamp_angle(d_rot.x)
-        p_delta = clamp_angle(d_rot.y)
-        r_delta = clamp_angle(d_rot.z)
-        rot_speed = ROTATION_SPEED * dt
-        if h_delta:
-            if abs(h_delta) > rot_speed:
-                h_delta = rot_speed * sign(h_delta)
-        if p_delta:
-            if abs(p_delta) > rot_speed:
-                p_delta = rot_speed * sign(p_delta)
-        if h_delta:
-            if abs(r_delta) > rot_speed:
-                r_delta = rot_speed * sign(r_delta)
-        self.root.set_hpr(self.root, h_delta, p_delta, r_delta)
+        current_quat = self.root.get_quat()
+        target_quat = self.root_target.get_quat()
+        current_quat.normalize()
+        target_quat.normalize()
+        if current_quat.is_same_direction(target_quat):
+            return
+        self.root.set_quat(current_quat + (target_quat - current_quat) * ROTATION_SPEED)
