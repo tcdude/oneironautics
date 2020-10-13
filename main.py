@@ -25,7 +25,7 @@ class GameApp(ShowBase):
     def __init__(self):
         ShowBase.__init__(self)
         pman.shim.init(self)
-        simplepbr.init(use_emission_maps=False)
+        simplepbr.init(use_emission_maps=False, exposure=0.08)
         self.disable_mouse()
         self.input = Input()
         self.accept('escape', sys.exit)
