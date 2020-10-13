@@ -3,7 +3,6 @@ import sys
 from direct.showbase.ShowBase import ShowBase
 
 import panda3d
-from panda3d.core import WindowProperties
 import pman.shim
 
 from gamelib import util
