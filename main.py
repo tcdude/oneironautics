@@ -30,7 +30,7 @@ class GameApp(ShowBase):
         self.accept('escape', sys.exit)
         self.accept('f1', self.toggle_wireframe)
         self.world = World()
-        self.set_background_color(util.srgb_color(0x292931))
+        self.set_background_color(util.srgb_color(0x000000))
 
 
 def main():
