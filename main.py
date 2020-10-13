@@ -4,6 +4,7 @@ from direct.showbase.ShowBase import ShowBase
 
 import panda3d
 import pman.shim
+import simplepbr
 
 from gamelib import util
 from gamelib.world import World
@@ -24,6 +25,7 @@ class GameApp(ShowBase):
     def __init__(self):
         ShowBase.__init__(self)
         pman.shim.init(self)
+        simplepbr.init(use_emission_maps=False)
         self.disable_mouse()
         self.input = Input()
         self.accept('escape', sys.exit)
