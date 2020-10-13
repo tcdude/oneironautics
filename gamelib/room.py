@@ -4,6 +4,31 @@ from .portal import Portal
 from .util import load_shader_str
 
 
+def process_vertex_data(vdata, read_only):
+    if not read_only:
+        texcoordw = core.GeomVertexWriter(vdata, 'texcoord.0')
+    texcoord = core.GeomVertexReader(vdata, 'texcoord.0')
+    vertex = core.GeomVertexReader(vdata, 'vertex')
+    while not vertex.is_at_end():
+        v = vertex.get_data3()
+        t = texcoord.get_data2()
+        if not read_only:
+            t = texcoordw.set_data2(round(t[0], 0), round(t[1], 0))
+
+
+def process_geom(geom):
+    vdata = geom.modify_vertex_data()
+    process_vertex_data(vdata, True)
+    process_vertex_data(vdata, False)
+    process_vertex_data(vdata, True)
+
+
+def process_geom_node(geom_node):
+    for i in range(geom_node.get_num_geoms()):
+        geom = geom_node.modify_geom(i)
+        process_geom(geom)
+
+
 class Room:
     def __init__(self, room):
         self.root = core.NodePath('Room')
@@ -18,10 +43,13 @@ class Room:
             Portal(self, i) for i in self.doors
         ]
 
-        if room.name == 'room_c':
-            for i in self.doors:
-                quat = i.get_quat(self.root)
-                print(i, quat.get_forward(), quat.get_up())
+        for i in self.doors:
+            i.set_transparency(core.TransparencyAttrib.M_alpha)
+            i.set_alpha_scale(0.0)
+            i.set_color(core.Vec4(0))
+            for np in i.find_all_matches('**/+GeomNode'):
+                geom_node = np.node()
+                process_geom_node(geom_node)
 
         portal_vert_str = load_shader_str('portal.vert')
         portal_frag_str = load_shader_str('portal.frag')
