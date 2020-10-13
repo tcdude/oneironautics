@@ -64,7 +64,7 @@ class World(DirectObject):
         self.set_active_room(np.get_python_tag('portal').this_room.name)
         door = self.active_room.doors[np.get_python_tag('door')]
         self.active_room.root.clear_transform()
-        self.active_room.root.set_h(-door.get_h(render))
+        self.active_room.root.set_hpr(-door.get_hpr(render))
 
         self.player.pivot.clear_transform()
         self.player.root.set_mat(render, door.get_mat(render))
