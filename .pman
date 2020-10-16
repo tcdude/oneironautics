@@ -1,0 +1,11 @@
+[general]
+name = "oneironautics"
+
+[run]
+main_file = "main.py"
+
+[build]
+converters = ["blend2bam"]
+
+[blend2bam]
+material_mode = "pbr"

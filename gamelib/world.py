@@ -7,18 +7,29 @@ from .player import Player
 from .room import Room
 
 
-START_ROOM = 'room_a'
+START_ROOM = 'starterella'
 
 
 class World(DirectObject):
     def __init__(self):
         super().__init__()
         self.root = base.render.attach_new_node('World')
-        rooms = loader.load_model('assets/models/rooms.blend')
-        self.room_models = {i.name: i for i in rooms.find_all_matches('**/room*')}
-        for i in self.room_models.values():
-            i.clear_transform()
-        self.rooms = {i: Room(self.room_models[i]) for i in self.room_models}
+ 
+        room_names = [
+            'cylinderella',
+            'looperella',
+            'plusserella',
+            'spherella',
+            'spirella',
+            'starterella',
+            'stepperella',
+        ]
+        self.rooms = {}
+        for room_name in room_names:
+            room_filename = 'models/rooms/'+room_name+'.bam'
+            room_model = loader.load_model(room_filename)
+            room_model.name = room_name
+            self.rooms[room_name] = Room(room_model)
 
         self.mask = core.BitMask32(0x1)
         self.nav = None
