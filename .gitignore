@@ -6,6 +6,7 @@
 .built_assets
 user.prc
 .pman.user
+*.blend1
 
 ### Python ###
 # Byte-compiled / optimized / DLL files
@@ -156,3 +157,4 @@ dmypy.json
 *.code-workspace
 
 # End of https://www.toptal.com/developers/gitignore/api/python,vscode
+
