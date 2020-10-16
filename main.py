@@ -38,15 +38,6 @@ class GameApp(ShowBase):
         self.accept('f1', self.toggle_wireframe)
         self.world = World()
         self.set_background_color(util.srgb_color(0x000000))
-        base_vert_str = util.load_shader_str('base.vert')
-        base_frag_str = util.load_shader_str('base.frag')
-        baseshader = core.Shader.make(
-            core.Shader.SL_GLSL,
-            vertex=base_vert_str,
-            fragment=base_frag_str,
-        )
-        self.render.set_shader(baseshader)
-        base.cam.node().get_lens().set_far(10000)
 
 
 def main():
