@@ -5,6 +5,7 @@
 ### CUSTOM ###
 .built_assets
 user.prc
+.pman.user
 
 ### Python ###
 # Byte-compiled / optimized / DLL files
