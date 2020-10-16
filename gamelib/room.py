@@ -64,6 +64,12 @@ class Room:
         self.room_model.node().set_bounds(core.OmniBoundingVolume())
         self.room_model.node().set_final(True)
 
+        for i in self.room_model.find_all_matches('**/Sun*'):
+            try:
+                self.root.set_light(i)
+            except AssertionError:
+                pass
+
     def activate(self):
         self._active = True
         for i in self.portals:
