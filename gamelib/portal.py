@@ -1,6 +1,8 @@
 from panda3d import core
 import simplepbr
 
+from . import buffer
+
 BUFFER_SIZE = 1024
 
 
@@ -10,29 +12,12 @@ class Portal:
         self.this_room = this_room
         self.conn_door = conn_door
         self.conn_room = conn_room
-        self.buff = base.win.make_texture_buffer('Room Buffer', BUFFER_SIZE, BUFFER_SIZE)
-        self.buff.set_clear_color(0x000000)
-
-        self.mytex = self.buff.get_texture()
-        #self.mytex.set_wrap_u(core.Texture.WM_clamp)
-        #self.mytex.set_wrap_v(core.Texture.WM_clamp)
-        self.buff.set_sort(-100)
-        self.cam = base.make_camera(self.buff)
-        self.cam.reparent_to(self.this_room.root)
-        simplepbr.init(
-            render_node=self.this_room.root,
-            window=self.buff,
-            camera_node=self.cam,
-            use_emission_maps=False,
-            max_lights=core.ConfigVariableInt('max-lights', 3).get_value(),
-            enable_shadows=core.ConfigVariableBool('shadows-enabled', False).get_value(),
-            msaa_samples=core.ConfigVariableInt('msaa-samples', 4).get_value(),
-            exposure=core.ConfigVariableDouble('exposure', 0.9).get_value(),
-        )
 
         self.hinge = self.this_door.attach_new_node('hinge')
         self.hinge.set_h(180)
         self.outside_in = self.hinge.attach_new_node('lookin_in')
+
+        self.buff = None
 
         self._active = False
         self.deactivate()
@@ -50,26 +35,37 @@ class Portal:
         self.collider.set_collide_mask(core.BitMask32(0x2))
 
     def activate(self):
-        self.cam.node().set_active(False)
+        self._remove_buffer()
         self._active = True
         self.this_door.show()
 
     def deactivate(self):
-        self.cam.node().set_active(True)
-        self.cam.node().get_lens().set_fov(base.cam.node().get_lens().get_fov())
+        self._remove_buffer()
         self._active = False
         self.this_door.hide()
 
+    def _remove_buffer(self):
+        if self.buff is not None:
+            self.buff.cam.node().set_active(False)
+            buffer.release_buffer(self.buff)
+            self.buff = None
+            self.conn_room = None
+            self.conn_door = None
+
     def connect_to(self, room, door):
+        self._remove_buffer()
         self.conn_room = room
         self.conn_door = door
+        self.buff = buffer.get_buffer(self.this_room.root)
+        self.buff.cam.node().set_active(True)
+        self.buff.cam.node().get_lens().set_fov(base.cam.node().get_lens().get_fov())
         for i in self.conn_door.find_all_texture_stages():
-            self.conn_door.set_texture(i, self.mytex, 1)
+            self.conn_door.set_texture(i, self.buff.tex, 1)
 
     def update(self):
         if self._active or self.conn_room is None:
             return
         self.outside_in.set_quat(base.cam.get_quat(self.conn_door))
         self.outside_in.set_pos(base.cam.get_pos(self.conn_door))
-        self.cam.set_mat(self.hinge, self.outside_in.get_mat())
+        self.buff.cam.set_mat(self.hinge, self.outside_in.get_mat())
         return
