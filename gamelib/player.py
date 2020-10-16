@@ -9,7 +9,7 @@ from panda3d.core import CollisionHandlerQueue
 from panda3d.core import Vec3
 
 
-ROTATION_SPEED = 0.5
+ROTATION_SPEED = 1
 
 
 def setup_ray(node, traverser, bitmask, point_a=(0,0,1), point_b=(0,0,0)):
@@ -73,11 +73,13 @@ class Player():
                 self.xyh_inertia[k] -= self.xyh_acceleration[k]*dt
             self.xyh_inertia[k] /= 1+self.friction
 
-        h = base.input.mouse_movement.x*self.xyh_acceleration[2]*dt
-        self.pivot.set_h(self.pivot, h)
-        p = base.input.mouse_movement.y*self.xyh_acceleration[2]*dt
-        base.cam.set_p(base.cam, p)
-        base.cam.set_p(max(-70, min(base.cam.get_p(), 70)))
+        if base.mouseWatcherNode.hasMouse():
+            h = base.input.mouse_movement.x*self.xyh_acceleration[2]*dt
+            self.pivot.set_h(self.pivot, h)
+            p = base.input.mouse_movement.y*self.xyh_acceleration[2]*dt
+            base.cam.set_p(base.cam, p)
+            base.cam.set_p(max(-70, min(base.cam.get_p(), 70)))
+            base.cam.set_r(0)
 
     def ray_to_destination(self):
         self.ray["node"].set_x(self.pivot, self.xyh_inertia[0])
