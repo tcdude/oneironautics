@@ -64,7 +64,7 @@ class Room:
         self.room_model.node().set_bounds(core.OmniBoundingVolume())
         self.room_model.node().set_final(True)
 
-        for i in self.room_model.find_all_matches('**/Sun*'):
+        for i in self.room_model.find_all_matches('**/Sun*/Sun*'):
             try:
                 self.root.set_light(i)
             except AssertionError:
