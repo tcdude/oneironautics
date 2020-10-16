@@ -14,7 +14,7 @@ class World(DirectObject):
     def __init__(self):
         super().__init__()
         self.root = base.render.attach_new_node('World')
- 
+
         room_names = [
             'cylinderella',
             'looperella',
@@ -29,6 +29,7 @@ class World(DirectObject):
             room_filename = 'models/rooms/'+room_name+'.bam'
             room_model = loader.load_model(room_filename)
             room_model.name = room_name
+            room_model.clear_transform()
             self.rooms[room_name] = Room(room_model)
 
         self.mask = core.BitMask32(0x1)
@@ -76,6 +77,7 @@ class World(DirectObject):
         door = self.active_room.doors[np.get_python_tag('door')]
         self.active_room.root.clear_transform()
         self.active_room.root.set_hpr(-door.get_hpr(render))
+        self.active_room.room_model.set_pos(-door.get_pos(self.active_room.root))
 
         self.player.pivot.clear_transform()
         self.player.root.set_mat(render, door.get_mat(render))
