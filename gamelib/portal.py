@@ -1,6 +1,6 @@
-import simplepbr
-
 from panda3d import core
+
+BUFFER_SIZE = 1024
 
 
 class Portal:
@@ -9,7 +9,7 @@ class Portal:
         self.this_room = this_room
         self.conn_door = conn_door
         self.conn_room = conn_room
-        self.buff = base.win.make_texture_buffer('Room Buffer', 1024, 1024)
+        self.buff = base.win.make_texture_buffer('Room Buffer', BUFFER_SIZE, BUFFER_SIZE)
         self.buff.set_clear_color(0x000000)
 
         self.mytex = self.buff.get_texture()
@@ -18,13 +18,6 @@ class Portal:
         self.buff.set_sort(-100)
         self.cam = base.make_camera(self.buff)
         self.cam.reparent_to(self.this_room.root)
-        simplepbr.init(
-            render_node=self.this_room.root,
-            window=self.buff,
-            camera_node=self.cam,
-            use_emission_maps=False,
-            #exposure=0.08
-        )
 
         self.hinge = self.this_door.attach_new_node('hinge')
         self.hinge.set_h(180)
