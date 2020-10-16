@@ -23,7 +23,8 @@ class Portal:
             window=self.buff,
             camera_node=self.cam,
             use_emission_maps=False,
-            exposure=0.08)
+            #exposure=0.08
+        )
 
         self.hinge = self.this_door.attach_new_node('hinge')
         self.hinge.set_h(180)
