@@ -61,6 +61,8 @@ class Room:
         for i in self.doors:
             i.set_shader(portalshader)
         self._active = False
+        self.room_model.node().set_bounds(core.OmniBoundingVolume())
+        self.room_model.node().set_final(True)
 
     def activate(self):
         self._active = True

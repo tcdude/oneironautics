@@ -53,13 +53,15 @@ float heart2D( vec2 p )
 
 void main() {
     // Switch between entire texture for fake version and screen space version
-    vec2 uv = vec2(1.0f) - l_texcoord; // vtx_pos.xy / vtx_pos.w;
-    //float a = clamp(sign(heart2D(uv * 2.0f - 1.0f)), -1.0f, 0.0f) * -1.0f;//clamp(sign(length(l_texcoord - 0.5f) - 0.5f), -1.0f, 0.0f) * -1.0f;
-    float a = heart2D(uv * 2.0f - 1.0f);
-    //vec3 n = normalize(noised(uv + osg_FrameTime * 0.3));
-    vec2 d = normalize(noised(uv + osg_FrameTime * 0.1).yz);
-    uv = smoothstep(0.0f, 1.0f, uv + d * 0.05);
+    vec2 uv = vtx_pos.xy / vtx_pos.w;
+    uv = uv / 2.0f + 0.5f;
+    vec2 local_uv = vec2(1.0f) - l_texcoord;
     vec4 tex_color = texture(p3d_Texture0, uv);
+    //float a = clamp(sign(heart2D(uv * 2.0f - 1.0f)), -1.0f, 0.0f) * -1.0f;//clamp(sign(length(l_texcoord - 0.5f) - 0.5f), -1.0f, 0.0f) * -1.0f;
+    float a = heart2D(local_uv * 2.0f - 1.0f);
+    //vec3 n = normalize(noised(uv + osg_FrameTime * 0.3));
+    vec2 d = normalize(noised(local_uv + osg_FrameTime * 0.1).yz);
+    local_uv = smoothstep(0.0f, 1.0f, local_uv + d * 0.05);
     //tex_color.rgb += n / 3.0f;
     //tex_color.rgb /= 1.3f;
     //tex_color.rgb += clamp(vec3(pow(n.x, 0.5f)), 0.0f, 1.0f);
@@ -67,7 +69,7 @@ void main() {
     vec4 bgcolor = vec4(0.0f);
     color = mix(tex_color, bgcolor, clamp(a / 0.03f, 0.0f, 1.0f)); // * a;
     float time = osg_FrameTime * 0.5f + 23.0f;
-    vec2 p = mod(uv * TAU, TAU) - 250.0;
+    vec2 p = mod(local_uv * TAU, TAU) - 250.0;
     vec2 i = vec2(p);
     float c = 1.0;
 	float inten = .005;

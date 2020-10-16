@@ -13,12 +13,17 @@ class Portal:
         self.buff.set_clear_color(0x000000)
 
         self.mytex = self.buff.get_texture()
-        self.mytex.set_wrap_u(core.Texture.WM_clamp)
-        self.mytex.set_wrap_v(core.Texture.WM_clamp)
+        #self.mytex.set_wrap_u(core.Texture.WM_clamp)
+        #self.mytex.set_wrap_v(core.Texture.WM_clamp)
         self.buff.set_sort(-100)
         self.cam = base.make_camera(self.buff)
         self.cam.reparent_to(self.this_room.root)
-        simplepbr.init(render_node=self.this_room.root, window=self.buff, camera_node=self.cam, use_emission_maps=False, exposure=0.08)
+        simplepbr.init(
+            render_node=self.this_room.root,
+            window=self.buff,
+            camera_node=self.cam,
+            use_emission_maps=False,
+            exposure=0.08)
 
         self.hinge = self.this_door.attach_new_node('hinge')
         self.hinge.set_h(180)
@@ -59,10 +64,7 @@ class Portal:
     def update(self):
         if self._active or self.conn_room is None:
             return
-        self.outside_in.set_quat(base.camera.get_quat(self.conn_door))
-        self.outside_in.set_pos(base.camera.get_pos(self.conn_door))
-        quat = self.outside_in.get_quat(self.this_door)
-        self.cam.set_quat(self.this_door, quat)
-        direction = self.outside_in.get_pos(self.conn_door)
-        direction.x = max(-0.75, min(0.75, direction.x))
-        self.cam.set_pos(self.this_door, (-direction.x, 0, 2.5))
+        self.outside_in.set_quat(base.cam.get_quat(self.conn_door))
+        self.outside_in.set_pos(base.cam.get_pos(self.conn_door))
+        self.cam.set_mat(self.hinge, self.outside_in.get_mat())
+        return
