@@ -1,4 +1,5 @@
 from panda3d import core
+import simplepbr
 
 BUFFER_SIZE = 1024
 
@@ -18,6 +19,16 @@ class Portal:
         self.buff.set_sort(-100)
         self.cam = base.make_camera(self.buff)
         self.cam.reparent_to(self.this_room.root)
+        simplepbr.init(
+            render_node=self.this_room.root,
+            window=self.buff,
+            camera_node=self.cam,
+            use_emission_maps=False,
+            max_lights=core.ConfigVariableInt('max-lights', 3).get_value(),
+            enable_shadows=core.ConfigVariableBool('shadows-enabled', False).get_value(),
+            msaa_samples=core.ConfigVariableInt('msaa-samples', 4).get_value(),
+            exposure=core.ConfigVariableDouble('exposure', 0.9).get_value(),
+        )
 
         self.hinge = self.this_door.attach_new_node('hinge')
         self.hinge.set_h(180)
