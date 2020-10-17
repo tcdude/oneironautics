@@ -79,7 +79,8 @@ class World(DirectObject):
         self.active_room.room_model.clear_transform()
         door_mat = door.get_mat(render)
         door_mat_inv = core.LMatrix4f(door_mat)
-        #print('invert', door_mat_inv.invert_in_place())
+        res = door_mat_inv.invert_in_place()
+        #print('invert', res)
         self.active_room.room_model.clear_transform()
         self.active_room.room_model.set_mat(render, door_mat_inv)
 
