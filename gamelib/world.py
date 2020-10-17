@@ -76,13 +76,20 @@ class World(DirectObject):
         self.set_active_room(np.get_python_tag('portal').this_room.name)
         door = self.active_room.doors[np.get_python_tag('door')]
         self.active_room.root.clear_transform()
-        self.active_room.root.set_hpr(-door.get_hpr(render))
-        self.active_room.room_model.set_pos(-door.get_pos(self.active_room.root))
+        self.active_room.room_model.clear_transform()
+        door_mat = door.get_mat(render)
+        door_mat_inv = core.LMatrix4f(door_mat)
+        #print('invert', door_mat_inv.invert_in_place())
+        self.active_room.room_model.clear_transform()
+        self.active_room.room_model.set_mat(render, door_mat_inv)
 
         self.player.pivot.clear_transform()
-        self.player.root.set_mat(render, door.get_mat(render))
-        self.player.root.heads_up(door, (0, 1, 0), (0, 0, 1))
-        self.player.root_target.set_mat(render, self.player.root.get_mat(render))
+        base.cam.clear_transform()
+        self.player.root.clear_transform()
+        self.player.root_target.clear_transform()
+        #if not door.get_mat(render).is_identity():
+        #    print(door.get_mat(render))
+        #print(door.get_mat(render).is_identity(), self.player.root.get_mat(render).is_identity())
         self.player.teleported = True
 
     def update(self, task):

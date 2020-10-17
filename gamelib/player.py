@@ -9,7 +9,7 @@ from panda3d.core import CollisionHandlerQueue
 from panda3d.core import Vec3
 
 
-ROTATION_SPEED = 1
+ROTATION_SPEED = 2
 
 
 def setup_ray(node, traverser, bitmask, point_a=(0,0,1), point_b=(0,0,0)):
@@ -98,15 +98,16 @@ class Player():
 
     def update(self):
         if self.teleported:
-            self.xyh_inertia = Vec3(0, self.xyh_acceleration[1] / 100, 0)
+            self.xyh_inertia = Vec3(0, self.xyh_acceleration[1], 0)
             self.teleported = False
         dt = globalClock.get_dt()
         self.handle_input()
-        self.ray_to_destination()
-        self.traverser.traverse(render)
-        if self.ray["handler"].get_num_entries() > 0:
-            self.move_to_ray()
-        self.ray["node"].set_y(self.pivot, 0)
+        if self.xyh_inertia.length() > 0:
+            self.ray_to_destination()
+            self.traverser.traverse(render)
+            if self.ray["handler"].get_num_entries() > 0:
+                self.move_to_ray()
+            self.ray["node"].set_y(self.pivot, 0)
         current_quat = self.root.get_quat()
         target_quat = self.root_target.get_quat()
         current_quat.normalize()
