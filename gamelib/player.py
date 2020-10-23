@@ -44,6 +44,7 @@ class Player():
         self.xyh_acceleration = Vec3(0.5,0.5,h_acc)
         self.friction = 0.2
         self.torque = 0.5
+        self.last_up = Vec3(0, 0, 1)
 
         # Collider for portals
         csphere = CollisionSphere(0, 0, 1.25, 1.5)
@@ -87,11 +88,27 @@ class Player():
 
     def move_to_ray(self):
         self.ray["handler"].sort_entries()
-        closest_entry = list(self.ray["handler"].entries)[0]
+        #closest_entry = list(self.ray["handler"].entries)[0]
+        closest_entry = None
+        delta = float('inf')
+        dot = -1.0
+        for c in list(self.ray["handler"].entries):
+            if closest_entry is None:
+                closest_entry = c
+                delta = c.get_surface_point(self.root).length()
+                dot = self.last_up.dot(c.get_surface_normal(render))
+                continue
+            if c.get_surface_point(self.root).length() < delta:
+                if self.last_up.dot(c.get_surface_normal(render)) > dot:
+                    closest_entry = c
+                    dot = self.last_up.dot(c.get_surface_normal(render))
+                    delta = c.get_surface_point(self.root).length()
+
         collision_point = closest_entry.get_surface_point(render)
         collision_normal = closest_entry.get_surface_normal(render)
+        self.last_up = collision_normal
         # take heed of the ray ending well below feet
-        collision_point.set_z(max(0,collision_point.z))
+        #collision_point.set_z(max(0,collision_point.z))
         self.root.set_pos(render, collision_point)
         self.root_target.set_pos(render, collision_point)
         self.root_target.heads_up(render, collision_point, collision_normal)
@@ -113,5 +130,6 @@ class Player():
         current_quat.normalize()
         target_quat.normalize()
         if current_quat.is_same_direction(target_quat):
+            self.root.set_quat(target_quat)
             return
         self.root.set_quat(current_quat + (target_quat - current_quat) * (ROTATION_SPEED * dt))
