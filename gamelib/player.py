@@ -80,11 +80,15 @@ class Player():
             p = base.input.mouse_movement.y*self.xyh_acceleration[2]*dt
             base.cam.set_p(base.cam, p)
             base.cam.set_p(max(-70, min(base.cam.get_p(), 70)))
-            base.cam.set_r(0)
+            #base.cam.set_r(0)
 
-    def ray_to_destination(self):
-        self.ray["node"].set_x(self.pivot, self.xyh_inertia[0])
-        self.ray["node"].set_y(self.pivot, self.xyh_inertia[1])
+    def ray_to_destination(self, xonly=0):
+        if xonly:
+            self.ray["node"].set_x(self.pivot, self.xyh_inertia[1] * xonly)
+            self.ray["node"].set_y(self.pivot, 0)
+        else:
+            self.ray["node"].set_x(self.pivot, self.xyh_inertia[0])
+            self.ray["node"].set_y(self.pivot, self.xyh_inertia[1])
 
     def move_to_ray(self):
         self.ray["handler"].sort_entries()
@@ -124,6 +128,16 @@ class Player():
             self.traverser.traverse(render)
             if self.ray["handler"].get_num_entries() > 0:
                 self.move_to_ray()
+            else:
+                self.ray_to_destination(-1)
+                self.traverser.traverse(render)
+                if self.ray["handler"].get_num_entries() > 0:
+                    self.move_to_ray()
+                else:
+                    self.ray_to_destination(1)
+                    self.traverser.traverse(render)
+                    if self.ray["handler"].get_num_entries() > 0:
+                        self.move_to_ray()
             self.ray["node"].set_y(self.pivot, 0)
         current_quat = self.root.get_quat()
         target_quat = self.root_target.get_quat()
