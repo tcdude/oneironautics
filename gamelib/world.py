@@ -16,6 +16,7 @@ class World(DirectObject):
         self.root = base.render.attach_new_node('World')
 
         room_names = [
+            'church',
             'cylinderella',
             'looperella',
             'plusserella',
