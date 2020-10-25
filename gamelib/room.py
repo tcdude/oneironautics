@@ -52,7 +52,7 @@ class Room:
                 process_geom_node(geom_node)
 
         portal_vert_str = load_shader_str('portal.vert')
-        portal_frag_str = load_shader_str('portal_heart_water.frag')
+        portal_frag_str = load_shader_str('portal_screenspace.frag')
         portalshader = core.Shader.make(
             core.Shader.SL_GLSL,
             vertex=portal_vert_str,
