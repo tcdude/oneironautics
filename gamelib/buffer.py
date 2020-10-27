@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 from panda3d import core
-import simplepbr
+import simplematcap
 
 
 @dataclass
@@ -9,7 +9,7 @@ class BufferObject:
     buff:core.GraphicsBuffer
     tex:core.Texture
     cam:core.NodePath
-    pipeline:simplepbr.Pipeline
+    pipeline:simplematcap.Pipeline
 
 
 _free_buffers:BufferObject = []
@@ -22,21 +22,18 @@ def get_buffer(render_node, buff_size=None, clear_color=0x000000):
         bobj.pipeline.render_node = render_node
         bobj.cam.reparent_to(render_node)
         return bobj
+    basic = core.Filename.expand_from('$MAIN_DIR/assets/textures/basic_1.exr')
+    basic = loader.load_texture(basic)
     buff = base.win.make_texture_buffer('Room Buffer', buff_size, buff_size)
     buff.set_clear_color(clear_color)
     buff.set_sort(-100)
     tex = buff.get_texture()
     cam = base.make_camera(buff)
     cam.reparent_to(render_node)
-    pipeline = simplepbr.init(
+    pipeline = simplematcap.init(
+        basic,
         render_node=render_node,
-        window=buff,
-        camera_node=cam,
-        use_emission_maps=False,
-        max_lights=core.ConfigVariableInt('max-lights', 3).get_value(),
-        enable_shadows=core.ConfigVariableBool('shadows-enabled', False).get_value(),
-        msaa_samples=core.ConfigVariableInt('msaa-samples', 4).get_value(),
-        exposure=core.ConfigVariableDouble('exposure', 0.9).get_value(),
+        light_dir=core.Vec3(-1, -1, 0.5).normalized()
     )
     return BufferObject(buff, tex, cam, pipeline)
 

@@ -4,7 +4,7 @@ from direct.showbase.ShowBase import ShowBase
 
 from panda3d import core
 import pman.shim
-import simplepbr
+import simplematcap
 
 from gamelib import util
 from gamelib.world import World
@@ -21,17 +21,22 @@ if USER_CONFIG_PATH.exists():
     core.load_prc_file(USER_CONFIG_PATH)
 
 
+def load_shader_str(shadername, defines=None):
+    shaderpath = core.Filename.expand_from(f'$MAIN_DIR/shaders/{shadername}').to_os_specific()
+
+    with open(shaderpath) as shaderfile:
+        shaderstr = shaderfile.read()
+    return shaderstr
+
+
 class GameApp(ShowBase):
     def __init__(self):
         ShowBase.__init__(self)
         pman.shim.init(self)
-        simplepbr.init(
-            use_emission_maps=False,
-            max_lights=core.ConfigVariableInt('max-lights', 3).get_value(),
-            enable_shadows=core.ConfigVariableBool('shadows-enabled', False).get_value(),
-            msaa_samples=core.ConfigVariableInt('msaa-samples', 4).get_value(),
-            exposure=core.ConfigVariableDouble('exposure', 0.9).get_value(),
-        )
+        basic = core.Filename.expand_from('$MAIN_DIR/assets/textures/basic_1.exr')
+        basic = self.loader.load_texture(basic)
+        pipeline = simplematcap.init(basic, render_node=self.render, light_dir=core.Vec3(-1, -1, 0.5).normalized())
+
         self.disable_mouse()
         self.input = Input()
         self.accept('escape', sys.exit)
