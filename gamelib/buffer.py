@@ -15,7 +15,7 @@ class BufferObject:
 _free_buffers:BufferObject = []
 
 
-def get_buffer(render_node, buff_size=None, clear_color=0x000000):
+def get_buffer(render_node, buff_size=None, clear_color=core.Vec4(0, 0, 0, 1)):
     buff_size = buff_size or core.ConfigVariableInt('portal-buffer-size', 1024).get_value()
     if _free_buffers:
         bobj = _free_buffers.pop()
@@ -26,6 +26,7 @@ def get_buffer(render_node, buff_size=None, clear_color=0x000000):
     basic = loader.load_texture(basic)
     buff = base.win.make_texture_buffer('Room Buffer', buff_size, buff_size)
     buff.set_clear_color(clear_color)
+    buff.set_clear_color_active(True)
     buff.set_sort(-100)
     tex = buff.get_texture()
     cam = base.make_camera(buff)
