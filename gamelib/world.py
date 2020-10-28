@@ -16,11 +16,13 @@ class World(DirectObject):
         self.root = base.render.attach_new_node('World')
 
         room_names = [
+            'city',
+            'road',
             'church',
-            'cylinderella',
-            'looperella',
+            #'cylinderella',
+            #'looperella',
             'plusserella',
-            'spherella',
+            #'spherella',
             'spirella',
             'starterella',
             'stepperella',
