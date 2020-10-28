@@ -19,6 +19,7 @@ class World(DirectObject):
             'city',
             'road',
             'church',
+            'forrest',
             #'cylinderella',
             #'looperella',
             'plusserella',

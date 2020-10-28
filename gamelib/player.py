@@ -41,8 +41,8 @@ class Player():
         )
         self.xyh_inertia = Vec3(0,0,0)
         h_acc = ConfigVariableDouble('mouse-accelleration', 0.1).get_value()
-        self.xyh_acceleration = Vec3(0.5,0.5,h_acc)
-        self.friction = 0.2
+        self.xyh_acceleration = Vec3(0.8,0.8,h_acc)
+        self.friction = 0.15
         self.torque = 0.5
         self.last_up = Vec3(0, 0, 1)
 
