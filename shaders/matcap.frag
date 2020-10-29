@@ -33,6 +33,8 @@ void main() {
     vec4 base_color = vtx_color * texture2D(p3d_Texture0, texcoord);
     base_color.rgb = rgb2hsv(smoothstep(0.0, 2.2, base_color.rgb));
     base_color.r = mod(base_color.r + hueshift, 1.0);
+    //base_color.b += 0.2;
+    //base_color.b = min(base_color.b, 1.0f);
     base_color.rgb = hsv2rgb(base_color.rgb);
     vec3 n = normalize(normal);
     vec3 v = normalize(-vtx_pos.xyz);
@@ -40,5 +42,7 @@ void main() {
     vec2 muv = n.xy * 0.5f + 0.5f;
     vec4 matcap_color = texture2D(matcap, vec2(1.0f - muv.x, muv.y));
 
-    gl_FragColor = (base_color * (matcap_color * 2.0f)) * 2.2;
+    base_color = (base_color * (matcap_color * 2.0f)) * 2.2;
+    float fog = pow(clamp(length(vtx_pos) / 50.0, 0.5, 1.0), 6.0);
+    gl_FragColor = mix(base_color, vec4(0), fog);
 }
