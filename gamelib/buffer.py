@@ -36,7 +36,7 @@ def get_buffer(render_node, buff_size=None, clear_color=core.Vec4(0, 0, 0, 1)):
         basic,
         render_node=render_node,
         light_dir=core.Vec3(-1, -1, 0.5).normalized(),
-        hueshift=random.uniform(-1.0, 1.0)
+        hueshift=core.Vec3(random.uniform(-1.0, 1.0), random.uniform(-1.0, 1.0), random.uniform(0.5, 2.0))
     )
     return BufferObject(buff, tex, cam, pipeline)
 

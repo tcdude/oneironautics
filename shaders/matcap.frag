@@ -2,11 +2,12 @@
 
 uniform sampler2D p3d_Texture0;
 uniform sampler2D matcap;
-uniform float hueshift;
+uniform vec3 hueshift;
 uniform struct p3d_FogParameters {
     vec4 color;
     float density;
 } p3d_Fog;
+uniform float osg_FrameTime;
 
 varying vec3 vtx_pos;
 varying vec4 vtx_color;
@@ -36,7 +37,8 @@ vec3 hsv2rgb(vec3 c)
 void main() {
     vec4 base_color = vtx_color * texture2D(p3d_Texture0, texcoord);
     base_color.rgb = rgb2hsv(smoothstep(0.0, 2.2, base_color.rgb));
-    base_color.r = mod(base_color.r + hueshift, 1.0);
+    float h = mix(hueshift.x, hueshift.y, abs(sin(osg_FrameTime * hueshift.z)));
+    base_color.r = mod(base_color.r + h, 1.0);
     //base_color.b += 0.2;
     //base_color.b = min(base_color.b, 1.0f);
     base_color.rgb = hsv2rgb(base_color.rgb);

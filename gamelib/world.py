@@ -51,7 +51,7 @@ class World(DirectObject):
         base.taskMgr.add(self.update)
 
     def set_active_room(self, room_name):
-        self.pipeline.hueshift = random.uniform(-1.0, 1.0)
+        self.pipeline.hueshift = core.Vec3(random.uniform(-1.0, 1.0), random.uniform(-1.0, 1.0), random.uniform(0.5, 2.0))
         if self.active_room is not None:
             self.active_room.deactivate()
             self.active_room.root.detach_node()

@@ -25,7 +25,7 @@ class Pipeline:
             *,
             render_node:core.NodePath = None,
             light_dir:core.Vec3 = None,
-            hueshift:float = 0.0,
+            hueshift:core.Vec3 = None,
     ):
         self._default_matcap = default_matcap
 
@@ -37,8 +37,12 @@ class Pipeline:
         else:
             self._light_dir = core.PTA_float(light_dir.normalized())
 
-        self._render_node = render_node
+        if hueshift is None:
+            hueshift = core.Vec3(0)
+
         self._hueshift = hueshift
+
+        self._render_node = render_node
 
         # Do not force power-of-two textures
         core.Texture.set_textures_power_2(core.ATS_none)
@@ -75,11 +79,11 @@ class Pipeline:
         self._recompile_matcap()
 
     @property
-    def hueshift(self) -> float:
+    def hueshift(self) -> core.Vec3:
         return self._hueshift
 
     @hueshift.setter
-    def hueshift(self, value:float) -> None:
+    def hueshift(self, value:core.Vec3) -> None:
         self._hueshift = value
         self._recompile_matcap()
 
@@ -97,7 +101,7 @@ class Pipeline:
         self._render_node.set_shader_input('hueshift', self._hueshift)
 
 
-def init(default_matcap:core.Texture, *, render_node:core.NodePath = None, light_dir:core.Vec3 = None, hueshift:float = 0.0):
+def init(default_matcap:core.Texture, *, render_node:core.NodePath = None, light_dir:core.Vec3 = None, hueshift:core.Vec3 = None):
     '''Initialize the Matcap render pipeline
     :param default_matcap: The default matcap to apply
     :type default_matcap: `panda3d.core.Texture`
