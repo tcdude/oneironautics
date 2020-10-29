@@ -3,6 +3,10 @@
 uniform sampler2D p3d_Texture0;
 uniform sampler2D matcap;
 uniform float hueshift;
+uniform struct p3d_FogParameters {
+    vec4 color;
+    float density;
+} p3d_Fog;
 
 varying vec3 vtx_pos;
 varying vec4 vtx_color;
@@ -43,6 +47,6 @@ void main() {
     vec4 matcap_color = texture2D(matcap, vec2(1.0f - muv.x, muv.y));
 
     base_color = (base_color * (matcap_color * 2.0f)) * 2.2;
-    float fog = pow(clamp(length(vtx_pos) / 50.0, 0.5, 1.0), 6.0);
-    gl_FragColor = mix(base_color, vec4(0), fog);
+    float fog = clamp(1.0 / exp(length(vtx_pos.xyz) * p3d_Fog.density), 0.0, 1.0);
+    gl_FragColor = mix(p3d_Fog.color, base_color, fog);
 }

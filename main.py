@@ -37,6 +37,10 @@ class GameApp(ShowBase):
         basic = self.loader.load_texture(basic)
         pipeline = simplematcap.init(basic, render_node=self.render, light_dir=core.Vec3(-1, -1, 0.5).normalized())
 
+        fog = core.Fog("Fog Name")
+        fog.set_color(0, 0, 0)
+        fog.set_exp_density(0.06)
+        self.render.set_fog(fog)
         self.disable_mouse()
         self.input = Input()
         self.accept('escape', sys.exit)
