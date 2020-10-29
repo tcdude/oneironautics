@@ -1,5 +1,7 @@
 #version 120
 
+#define PI 3.141592653589793
+
 uniform sampler2D p3d_Texture0;
 uniform sampler2D matcap;
 uniform vec3 hueshift;
@@ -37,7 +39,7 @@ vec3 hsv2rgb(vec3 c)
 void main() {
     vec4 base_color = vtx_color * texture2D(p3d_Texture0, texcoord);
     base_color.rgb = rgb2hsv(smoothstep(0.0, 2.2, base_color.rgb));
-    float h = mix(hueshift.x, hueshift.y, abs(sin(osg_FrameTime * hueshift.z)));
+    float h = mix(hueshift.x, hueshift.y, abs(sin(osg_FrameTime * PI / hueshift.z)));
     base_color.r = mod(base_color.r + h, 1.0);
     //base_color.b += 0.2;
     //base_color.b = min(base_color.b, 1.0f);
