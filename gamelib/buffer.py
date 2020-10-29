@@ -1,7 +1,8 @@
 from dataclasses import dataclass
+import random
 
 from panda3d import core
-import simplematcap
+from gamelib import simplematcap
 
 
 @dataclass
@@ -34,7 +35,8 @@ def get_buffer(render_node, buff_size=None, clear_color=core.Vec4(0, 0, 0, 1)):
     pipeline = simplematcap.init(
         basic,
         render_node=render_node,
-        light_dir=core.Vec3(-1, -1, 0.5).normalized()
+        light_dir=core.Vec3(-1, -1, 0.5).normalized(),
+        hueshift=random.uniform(-1.0, 1.0)
     )
     return BufferObject(buff, tex, cam, pipeline)
 

@@ -11,8 +11,9 @@ START_ROOM = 'starterella'
 
 
 class World(DirectObject):
-    def __init__(self):
+    def __init__(self, pipeline):
         super().__init__()
+        self.pipeline = pipeline
         self.root = base.render.attach_new_node('World')
 
         room_names = [
@@ -27,6 +28,7 @@ class World(DirectObject):
             'spirella',
             'starterella',
             'stepperella',
+            'city',
         ]
         self.rooms = {}
         for room_name in room_names:
@@ -48,6 +50,7 @@ class World(DirectObject):
         base.taskMgr.add(self.update)
 
     def set_active_room(self, room_name):
+        self.pipeline.hueshift = random.uniform(-1.0, 1.0)
         if self.active_room is not None:
             self.active_room.deactivate()
             self.active_room.root.detach_node()
@@ -56,7 +59,7 @@ class World(DirectObject):
         self.active_room.root.reparent_to(self.root)
         self.active_room.activate()
         self.nav = self.active_room.room_model.find("**/nav*")
-        #self.nav.hide()
+        self.nav.hide()
         self.nav.set_collide_mask(self.mask)
 
         # randomize portal connections

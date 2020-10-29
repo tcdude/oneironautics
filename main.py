@@ -4,7 +4,7 @@ from direct.showbase.ShowBase import ShowBase
 
 from panda3d import core
 import pman.shim
-import simplematcap
+from gamelib import simplematcap
 
 from gamelib import util
 from gamelib.world import World
@@ -41,7 +41,7 @@ class GameApp(ShowBase):
         self.input = Input()
         self.accept('escape', sys.exit)
         self.accept('f1', self.toggle_wireframe)
-        self.world = World()
+        self.world = World(pipeline)
         self.set_background_color(util.srgb_color(0x000000))
 
 
