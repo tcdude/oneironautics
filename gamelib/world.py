@@ -29,6 +29,7 @@ class World(DirectObject):
             'starterella',
             'stepperella',
             'city',
+            'swamp',
         ]
         self.rooms = {}
         for room_name in room_names:
