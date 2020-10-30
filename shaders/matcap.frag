@@ -1,4 +1,4 @@
-#version 120
+#version 130
 
 #define PI 3.141592653589793
 
@@ -11,11 +11,13 @@ uniform struct p3d_FogParameters {
 } p3d_Fog;
 uniform float osg_FrameTime;
 
-varying vec3 vtx_pos;
-varying vec4 vtx_color;
-varying vec3 normal;
-varying vec2 texcoord;
-varying vec3 light;
+in vec3 vtx_pos;
+in vec4 vtx_color;
+in vec3 normal;
+in vec2 texcoord;
+in vec3 light;
+
+out vec4 color;
 
 vec3 rgb2hsv(vec3 c)
 {
@@ -50,7 +52,8 @@ void main() {
     vec2 muv = n.xy * 0.5f + 0.5f;
     vec4 matcap_color = texture2D(matcap, vec2(1.0f - muv.x, muv.y));
 
-    base_color = (base_color * (matcap_color * 2.0f)) * 2.2;
+    base_color = ((base_color * 2.2) * matcap_color) * 2.2;
     float fog = clamp(1.0 / exp(length(vtx_pos.xyz) * p3d_Fog.density), 0.0, 1.0);
-    gl_FragColor = mix(p3d_Fog.color, base_color, fog);
+
+    color = mix(p3d_Fog.color, base_color, fog);
 }

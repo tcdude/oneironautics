@@ -1,4 +1,4 @@
-#version 120
+#version 130
 
 uniform mat4 p3d_ModelViewProjectionMatrix;
 uniform mat4 p3d_ModelViewMatrix;
@@ -7,16 +7,16 @@ uniform mat4 p3d_ModelMatrixInverse;
 uniform vec3 light_dir;
 uniform float hueshift;
 
-attribute vec4 p3d_Vertex;
-attribute vec3 p3d_Normal;
-attribute vec2 p3d_MultiTexCoord0;
-attribute vec4 p3d_Color;
+in vec4 p3d_Vertex;
+in vec3 p3d_Normal;
+in vec2 p3d_MultiTexCoord0;
+in vec4 p3d_Color;
 
-varying vec3 vtx_pos;
-varying vec4 vtx_color;
-varying vec3 normal;
-varying vec2 texcoord;
-varying vec3 light;
+out vec3 vtx_pos;
+out vec4 vtx_color;
+out vec3 normal;
+out vec2 texcoord;
+out vec3 light;
 
 
 void main() {

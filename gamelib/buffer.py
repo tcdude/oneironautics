@@ -29,6 +29,10 @@ def get_buffer(render_node, buff_size=None, clear_color=core.Vec4(0, 0, 0, 1)):
     buff.set_clear_color(clear_color)
     buff.set_clear_color_active(True)
     buff.set_sort(-100)
+    fog = core.Fog("Fog Name")
+    fog.set_color(0, 0, 0)
+    fog.set_exp_density(0.04)
+    render_node.set_fog(fog)
     tex = buff.get_texture()
     cam = base.make_camera(buff)
     cam.reparent_to(render_node)
@@ -36,7 +40,7 @@ def get_buffer(render_node, buff_size=None, clear_color=core.Vec4(0, 0, 0, 1)):
         basic,
         render_node=render_node,
         light_dir=core.Vec3(-1, -1, 0.5).normalized(),
-        hueshift=core.Vec3(random.uniform(-1.0, 1.0), random.uniform(-1.0, 1.0), random.uniform(0.5, 2.0))
+        hueshift=core.Vec3(random.uniform(-1.0, 1.0), random.uniform(-1.0, 1.0), 20)
     )
     return BufferObject(buff, tex, cam, pipeline)
 
