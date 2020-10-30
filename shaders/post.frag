@@ -28,7 +28,8 @@ void main() {
 
     vec4 out_tex = texture2D(p3d_Texture0, texcoord);
     sharp *= out_tex.a;
-    sharp *= 0.2 + pow(distance(texcoord, vec2(0.5, 0.5)) * 2.0, 2.0);
+    float d = texture2D(depth, texcoord).x;
+    sharp *= 0.2 + pow(d * 0.7, 2.0);
 
     //Hardcoded blur
     out_tex += texture2D(p3d_Texture0, texcoord + vec2(-0.326212,-0.405805) * sharp);

@@ -62,7 +62,7 @@ class GameApp(ShowBase):
         )
         quad.set_shader(postshader)
         quad.set_shader_input('tex', tex)
-        quad.set_shader_input('blur', 5)
+        quad.set_shader_input('blur', 2.5)
         quad.set_shader_input('depth', depth)
         #gt = self.loader.load_texture('textures/blot.png')
         #gt = self.loader.load_texture('video/loglo2.mp4')
